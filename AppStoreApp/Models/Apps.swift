@@ -11,13 +11,14 @@ struct Apps: Codable, Hashable {
     let results: [App]
 }
 //
-//// TODO: App view should show app name, app icon, description, all screen shots, price, size, version, etc
+// TODO: App view should show app name, app icon, description, all screen shots, price, size, version, etc
+// TODO: change names to things that make sense in the app. like icon instead of artworkUrl100
 struct App: Codable, Identifiable, Hashable {
     let id: Int // trackId
     let trackName: String? // trackName
-//    let icon: String // artworkUrl60, artworkUrl512, artworkUrl100
+    let artworkUrl100: String? // artworkUrl60, artworkUrl512, artworkUrl100
     let description: String? // description
-//    let screenshots: [String] // screenshotUrls
+    let screenshotUrls: [String]? // screenshotUrls
 //// TODO: Do i need to show appleTV/ipad screenshots?
 //    let price: Float // price
     let fileSizeBytes: Int? // fileSizeBytes
@@ -32,5 +33,5 @@ struct App: Codable, Identifiable, Hashable {
 //    let genres: [String] // genres
 //    let artistId: Int // artistId
 //    let artistName: String? // artistName
-    let version: Double? // version
+    let version: String? // version
 }
