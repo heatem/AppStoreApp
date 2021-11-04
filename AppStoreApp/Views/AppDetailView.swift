@@ -17,6 +17,9 @@ class AppDetailView: UIView {
     // app icon
     let iconImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.borderWidth = 1
+        imageView.layer.borderColor = UIColor.gray.cgColor
         return imageView
     }()
     
@@ -33,21 +36,21 @@ class AppDetailView: UIView {
     // price
     let priceLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label.font = UIFont.preferredFont(forTextStyle: .body)
         return label
     }()
     
     // version
     let versionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Version: "
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label.font = UIFont.preferredFont(forTextStyle: .footnote)
         return label
     }()
     
     // size
     let sizeLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.preferredFont(forTextStyle: .footnote)
         return label
     }()
     
@@ -82,11 +85,10 @@ class AppDetailView: UIView {
     
     func installConstraints() {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        iconImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
-        iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        iconImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        iconImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
+        iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        iconImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
         iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor).isActive = true
-        
         
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 16).isActive = true
@@ -105,7 +107,7 @@ class AppDetailView: UIView {
 //        versionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
         
         sizeLabel.translatesAutoresizingMaskIntoConstraints = false
-        sizeLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 8).isActive = true
+        sizeLabel.bottomAnchor.constraint(equalTo: versionLabel.bottomAnchor).isActive = true
         sizeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
         
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
