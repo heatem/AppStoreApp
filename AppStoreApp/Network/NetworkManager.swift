@@ -72,3 +72,18 @@ func getSearchResults(for query: String, completionHandler: @escaping ([App]) ->
 //        }
 //    
 }
+
+// TODO: to get an app, use the trackId with https://itunes.apple.com/lookup?id=284910350 (https://itunes.apple.com/lookup?id=\(trackId))
+func getAppIcon(from path: String, completionHandler: @escaping (_ data: Data?) -> ()) {
+    guard let url = URL(string: path) else { return }
+    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+        if let error = error {
+            print("Error fetching image: \(error)")
+            return
+        } else {
+            completionHandler(data)
+        }
+    }
+    
+    task.resume()
+}
