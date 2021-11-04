@@ -8,7 +8,16 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var apps = [App]()
+    let appViewController = AppDetailViewController()
+    
+    var allApps: [App]? = [
+        App(id: 1, trackName: "first", description: "first app's description", fileSizeBytes: 456789, formattedPrice: "$4.99", sellerName: "The Count", version: 1.0),
+        App(id: 2, trackName: "second", description: "second app's description", fileSizeBytes: 9876543, formattedPrice: "Free", sellerName: "Dracula", version: 1.1),
+        App(id: 3, trackName: "third", description: "third app's description", fileSizeBytes: 7655678, formattedPrice: "$1.99", sellerName: "Muahaha", version: 1.3)
+    ]
+    var apps: [App]?
+    var selectedIndex = 0
+    var query = ""
     let searchBar: UISearchBar = {
         let bar = UISearchBar()
         bar.showsCancelButton = true
@@ -16,18 +25,46 @@ class ViewController: UIViewController {
         return bar
     }()
     
+    /*
+     TODO: Should toggling filter the results or wait for search to be pressed?
+     Consider minimizing calls to the endpoint by filter results by formattedPrice == "Free" or not
+     Ask if we should prioritize free/paid in the call or filter results
+     */
+    
+    // TODO: Add segmentedcontrol for free or paid (or both?)
+    let freePaidSegmentedControl: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["Free", "Paid"])
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.backgroundColor = .darkGray
+        segmentedControl.selectedSegmentTintColor = .systemBlue
+        segmentedControl.addTarget(self, action: #selector(toggleFreePaid), for: .valueChanged)
+        return segmentedControl
+    }()
+    
+    // TODO: Add filter mechanism for genres
+    // Options:
+    // 1. handle it as part of the request
+    // 2. Use a stackview created with the genre options from the results
+
     // TODO: Add tableview to list results
+    let appsTableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Search"
+        self.navigationController?.navigationBar.isTranslucent = true
+        view.backgroundColor = .white
+        
+        // TODO: remove once you're pulling in data. Future improvement: use userdefaults to persist selection
+        apps = allApps?.filter { $0.formattedPrice == "Free" }
 
         searchBar.delegate = self
 
-        view.backgroundColor = .blue
-        self.navigationController?.navigationBar.isTranslucent = true
         view.addSubview(searchBar)
-
+        view.addSubview(freePaidSegmentedControl)
+        view.addSubview(appsTableView)
+        
+        configureTableView()
         addConstraints()
     }
 
@@ -37,30 +74,48 @@ class ViewController: UIViewController {
         searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         
+        freePaidSegmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        freePaidSegmentedControl.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 4).isActive = true
+        freePaidSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+        freePaidSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+        
+        appsTableView.translatesAutoresizingMaskIntoConstraints = false
+        appsTableView.topAnchor.constraint(equalTo: freePaidSegmentedControl.bottomAnchor, constant: 4).isActive = true
+        appsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        appsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        appsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+    
+    func configureTableView() {
+        appsTableView.delegate = self
+        appsTableView.dataSource = self
+        appsTableView.register(AppsTableViewCell.self, forCellReuseIdentifier: "AppCell")
+    }
+    
+    @objc func toggleFreePaid(_ sender: UISegmentedControl!) {
+        selectedIndex = freePaidSegmentedControl.selectedSegmentIndex
+        switch selectedIndex {
+        case 0:
+            apps = allApps?.filter { $0.formattedPrice == "Free" }
+        default:
+            apps = allApps?.filter { $0.formattedPrice != "Free" }
+        }
+        appsTableView.reloadData()
+        print(selectedIndex)
     }
 }
 
 extension ViewController: UISearchBarDelegate {
-    // add function to get results
-    func getResults(from query: String, completionHandler: @escaping ([App]) -> Void) {
-        // TODO: add code to get results
-        // TODO: move this function to a network folder/file
-    }
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let query = searchBar.text {
             title = "\(query)"
-            getResults(from: query) { [weak self] (apps) in
-                self?.apps = apps
-                // TODO: do try encoding the results to Apps
-                // TODO: reload data (on the main thread since it's UI)
-            }
-            
+
+            // TODO: get search results
         }
-                    
+
         searchBar.resignFirstResponder()
     }
-    
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.resignFirstResponder()
@@ -68,3 +123,25 @@ extension ViewController: UISearchBarDelegate {
 }
 
 // TODO: Extend ViewController to conform to UITableview protocols
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return apps?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AppCell") as! AppsTableViewCell
+        if let appsList = apps {
+            let app = appsList[indexPath.row]
+            cell.set(app: app)
+        }
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let app = apps?[indexPath.row] {
+            let appDetailViewController = AppDetailViewController()
+            appDetailViewController.app = app
+            navigationController?.pushViewController(appDetailViewController, animated: true)
+        }
+    }
+}
