@@ -54,7 +54,7 @@ struct App: Codable, Hashable {
     let description: String?
 //    let artistId: Int
 //    let artistName: String
-//    let genres: [String]
+    let genres: [String]?
 //    let price: Double
     let version: String?
 //    let wrapperType: String

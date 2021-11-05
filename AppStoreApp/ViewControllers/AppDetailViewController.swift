@@ -17,6 +17,7 @@ class AppDetailViewController: UIViewController {
         trackName: "",
         sellerName: "",
         description: "",
+        genres: [],
         version: "")
 
     let scrollView: UIScrollView = {

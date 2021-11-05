@@ -24,16 +24,23 @@ class ViewController: UIViewController {
     let freePaidSegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["Free", "Paid"])
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.backgroundColor = .darkGray
+        segmentedControl.backgroundColor = .lightGray
         segmentedControl.selectedSegmentTintColor = .systemBlue
         segmentedControl.addTarget(self, action: #selector(toggleFreePaid), for: .valueChanged)
         return segmentedControl
     }()
-    
-    // TODO: Add filter mechanism for genres
-    // Options:
-    // 1. handle it as part of the request
-    // 2. Use a stackview created with the genre options from the results
+
+    // TODO: filter by genre
+    // 1. add the genres for all the apps in the current view (free or paid) to an array.
+    // 2. add a stackview with buttons for each filter
+    // 3. if a button is pressed, only show apps that have that genre
+    var genresSet: Set<String> = []
+    var genresStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        return stackView
+    }()
 
     let appsTableView = UITableView()
 
@@ -50,6 +57,7 @@ class ViewController: UIViewController {
         view.addSubview(searchBar)
         view.addSubview(freePaidSegmentedControl)
         view.addSubview(appsTableView)
+        view.addSubview(genresStackView)
 
         configureTableView()
         addConstraints()
@@ -65,8 +73,14 @@ class ViewController: UIViewController {
         freePaidSegmentedControl.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 4).isActive = true
         freePaidSegmentedControl.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         freePaidSegmentedControl.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+        
+//        genresStackView.translatesAutoresizingMaskIntoConstraints = false
+//        genresStackView.topAnchor.constraint(equalTo: freePaidSegmentedControl.bottomAnchor, constant: 4).isActive = true
+//        genresStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+//        genresStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 
         appsTableView.translatesAutoresizingMaskIntoConstraints = false
+//        appsTableView.topAnchor.constraint(equalTo: genresStackView.bottomAnchor, constant: 4).isActive = true
         appsTableView.topAnchor.constraint(equalTo: freePaidSegmentedControl.bottomAnchor, constant: 4).isActive = true
         appsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         appsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -89,12 +103,31 @@ class ViewController: UIViewController {
         }
         appsTableView.reloadData()
     }
+    
+    func getGenres() {
+        guard let apps = apps else { return }
+
+        var array = [String]()
+        for app in apps {
+            if let genres = app.genres {
+                array += genres
+            }
+        }
+        genresSet = Set(array)
+    }
+    
+    func makeButton(with label: String) -> UIButton {
+        let button = UIButton()
+        button.backgroundColor = .lightGray
+        button.titleLabel?.textColor = .black
+        button.titleLabel?.text = label
+        return button
+    }
 }
 
 extension ViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text else {
-            // TODO: alert user why nothing happened
             return
         }
         title = "Results for: \(query)"
@@ -107,11 +140,16 @@ extension ViewController: UISearchBarDelegate {
             default:
                 self?.apps = self?.allApps?.filter { $0.formattedPrice != "Free" }
             }
+            self?.getGenres()
             DispatchQueue.main.async {
+                if let genres = self?.genresSet {
+                    for genre in genres {
+                        self?.genresStackView.addArrangedSubview((self?.makeButton(with: genre))!)
+                    }
+                }
                 self?.appsTableView.reloadData()
             }
         }
-
         searchBar.resignFirstResponder()
     }
 
