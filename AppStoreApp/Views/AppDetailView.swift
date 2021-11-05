@@ -64,6 +64,14 @@ class AppDetailView: UIView {
 
     // all screen shots
     // TODO: show a collection of screenshots
+    let screenshotsCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        layout.itemSize = CGSize(width: 144, height: 192)
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,6 +83,7 @@ class AppDetailView: UIView {
         addSubview(versionLabel)
         addSubview(sizeLabel)
         addSubview(descriptionLabel)
+        addSubview(screenshotsCollectionView)
         
         installConstraints()
     }
@@ -114,5 +123,11 @@ class AppDetailView: UIView {
         descriptionLabel.topAnchor.constraint(equalTo: versionLabel.bottomAnchor, constant: 16).isActive = true
         descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
         descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        
+        screenshotsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        screenshotsCollectionView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16).isActive = true
+        screenshotsCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+        screenshotsCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        screenshotsCollectionView.heightAnchor.constraint(equalToConstant: 192).isActive = true
     }
 }
