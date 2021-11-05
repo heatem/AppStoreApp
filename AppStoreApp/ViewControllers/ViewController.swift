@@ -24,16 +24,11 @@ class ViewController: UIViewController {
     let freePaidSegmentedControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["Free", "Paid"])
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.backgroundColor = .darkGray
+        segmentedControl.backgroundColor = .lightGray
         segmentedControl.selectedSegmentTintColor = .systemBlue
         segmentedControl.addTarget(self, action: #selector(toggleFreePaid), for: .valueChanged)
         return segmentedControl
     }()
-    
-    // TODO: Add filter mechanism for genres
-    // Options:
-    // 1. handle it as part of the request
-    // 2. Use a stackview created with the genre options from the results
 
     let appsTableView = UITableView()
 
@@ -94,7 +89,6 @@ class ViewController: UIViewController {
 extension ViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text else {
-            // TODO: alert user why nothing happened
             return
         }
         title = "Results for: \(query)"
