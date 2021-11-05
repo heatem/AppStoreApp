@@ -66,8 +66,8 @@ class AppDetailView: UIView {
     // TODO: show a collection of screenshots
     let screenshotsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        layout.itemSize = CGSize(width: 144, height: 192)
+        layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        layout.itemSize = CGSize(width: 208, height: 274)
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
@@ -128,6 +128,6 @@ class AppDetailView: UIView {
         screenshotsCollectionView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16).isActive = true
         screenshotsCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
         screenshotsCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
-        screenshotsCollectionView.heightAnchor.constraint(equalToConstant: 192).isActive = true
+        screenshotsCollectionView.heightAnchor.constraint(equalToConstant: 274).isActive = true
     }
 }

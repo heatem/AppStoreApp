@@ -33,12 +33,20 @@ class AppDetailViewController: UIViewController {
         sellerName: "Not Heather",
         version: "1.1")
     
-    let scrollView = UIScrollView()
+    let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        // TODO: make dynamic
+        scrollView.contentSize.height = 1000
+        return scrollView
+    }()
+
     let appDetailView = AppDetailView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.backgroundColor = .systemBackground
         // add data to views
         // TODO: Set up iconImageView
         if let iconPath = app.artworkUrl100 {
@@ -51,18 +59,13 @@ class AppDetailViewController: UIViewController {
             }
         }
         
-        appDetailView.nameLabel.text = app.trackName
-        appDetailView.priceLabel.text = app.formattedPrice
-        appDetailView.versionLabel.text = "Version: \(app.version != nil ? "\(app.version!)" : "")"
-        // TODO: add a function to convert bytes to KB and MB
-        appDetailView.sizeLabel.text = app.fileSizeBytes != nil ? "Size: \(app.fileSizeBytes! / 1000) KB" : ""
-        appDetailView.descriptionLabel.text = app.description
-        
         // add views
-        view.addSubview(scrollView)
-        view.addSubview(appDetailView)
-        
+        configureAppDetailView()
         configureCollectionView()
+        scrollView.contentSize.height = scrollView.contentSize.height
+        scrollView.addSubview(appDetailView)
+        view.addSubview(scrollView)
+
         installConstraints()
     }
     
@@ -72,18 +75,28 @@ class AppDetailViewController: UIViewController {
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
+
         appDetailView.translatesAutoresizingMaskIntoConstraints = false
-        appDetailView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        appDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        appDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        appDetailView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        appDetailView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        appDetailView.heightAnchor.constraint(equalToConstant: scrollView.contentSize.height).isActive = true
+        appDetailView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+        appDetailView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        appDetailView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16).isActive = true
     }
     
     func configureCollectionView() {
         appDetailView.screenshotsCollectionView.delegate = self
         appDetailView.screenshotsCollectionView.dataSource = self
         appDetailView.screenshotsCollectionView.register(ScreenshotCollectionViewCell.self, forCellWithReuseIdentifier: "ScreenshotCell")
+    }
+    
+    func configureAppDetailView() {
+        appDetailView.nameLabel.text = app.trackName
+        appDetailView.priceLabel.text = app.formattedPrice
+        appDetailView.versionLabel.text = "Version: \(app.version != nil ? "\(app.version!)" : "")"
+        // TODO: add a function to convert bytes to KB and MB
+        appDetailView.sizeLabel.text = app.fileSizeBytes != nil ? "Size: \(app.fileSizeBytes! / 1000) KB" : ""
+        appDetailView.descriptionLabel.text = app.description
     }
 }
 
