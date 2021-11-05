@@ -16,16 +16,16 @@ class ScreenshotCollectionViewCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         addSubview(screenshotImageView)
-        
+
         installConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func installConstraints() {
         screenshotImageView.translatesAutoresizingMaskIntoConstraints = false
         screenshotImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true

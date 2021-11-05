@@ -13,25 +13,50 @@ struct Apps: Codable, Hashable {
 //
 // TODO: App view should show app name, app icon, description, all screen shots, price, size, version, etc
 // TODO: change names to things that make sense in the app. like icon instead of artworkUrl100
-struct App: Codable, Identifiable, Hashable {
-    let id: Int // trackId
-    let trackName: String? // trackName
-    let artworkUrl100: String? // artworkUrl60, artworkUrl512, artworkUrl100
-    let description: String? // description
-    let screenshotUrls: [String]? // screenshotUrls
-//// TODO: Do i need to show appleTV/ipad screenshots?
-//    let price: Float // price
-    let fileSizeBytes: Int? // fileSizeBytes
-    let formattedPrice: String? // formattedPrice
-//    let advisoryRating: String // contentAdvisoryRating
-//    let releaseDate: String // releaseDate
-    let sellerName: String? // sellerName
-//    let primaryGenreName: String // primaryGenreName
-//    let averageUserRatingForCurrentVersion: Float // averageUserRatingForCurrentVersion
-//    let userRatingForCurrentVersion: Int // userRatingCountForCurrentVersion
-//    let averageUserRating: Float // averageUserRating
-//    let genres: [String] // genres
-//    let artistId: Int // artistId
-//    let artistName: String? // artistName
-    let version: String? // version
+// TODO: Clarify all screenshots as in every device? if so, add collections views for each device's screenshots
+struct App: Codable, Hashable {
+//    let ipadScreenshotUrls: [String]
+//    let appletvScreenshotUrls:[String]
+//    let artworkUrl60: String
+//    let artworkUrl512: String
+    let artworkUrl100: String?
+//    let artistViewUrl: String
+    let screenshotUrls: [String]?
+//    let isGameCenterEnabled: Bool
+//    let features: [String]
+//    let supportedDevices: [String]
+//    let advisories: [String]
+//    let kind: String
+//    let minimumOsVersion: String
+//    let trackCensoredName: String
+//    let languageCodesISO2A: [String]
+    let fileSizeBytes: String?
+//    let sellerUrl: String
+    let formattedPrice: String?
+//    let contentAdvisoryRating: String
+//    let averageUserRatingForCurrentVersion: Double
+//    let userRatingCountForCurrentVersion: Int
+//    let averageUserRating: Double
+//    let trackViewUrl: String
+//    let trackContentRating: String
+//    let bundleId: String
+    let trackId: Int
+    let trackName: String?
+//    let releaseDate: String
+    let sellerName: String?
+//    let primaryGenreName: String
+//    let genreIds: [String]
+//    let isVppDeviceBasedLicensingEnabled: Bool
+//    let currentVersionReleaseDate: String
+//    let releaseNotes: String
+//    let primaryGenreId: Int
+//    let currency: String
+    let description: String?
+//    let artistId: Int
+//    let artistName: String
+//    let genres: [String]
+//    let price: Double
+    let version: String?
+//    let wrapperType: String
+//    let userRatingCount: Int
 }
