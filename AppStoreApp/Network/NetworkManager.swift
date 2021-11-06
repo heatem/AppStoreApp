@@ -8,7 +8,7 @@
 import Foundation
 
 func getSearchResults(for query: String, completionHandler: @escaping ([App]) -> Void) {
-    let urlString = "https://itunes.apple.com/search?entity=software&limit=200&term=\(query)"
+    let urlString = "https://itunes.apple.com/search?entity=software&limit=200&term=\(query.replacingOccurrences(of: " ", with: "%20"))"
     guard let url = URL(string: urlString) else { return }
 
     let task = URLSession.shared.dataTask(with: url) { data, _, error in

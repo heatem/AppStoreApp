@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         segmentedControl.addTarget(self, action: #selector(toggleFreePaid), for: .valueChanged)
         return segmentedControl
     }()
-
+    
     // TODO: filter by genre
     // 1. add the genres for all the apps in the current view (free or paid) to an array.
     // 2. add a stackview with buttons for each filter
